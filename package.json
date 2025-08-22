@@ -1,0 +1,47 @@
+{
+  "name": "@thainationalid/card-reader",
+  "version": "1.0.0",
+  "description": "Modern TypeScript library for reading Thai National ID Cards with comprehensive event handling and type safety",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "prebuild": "npm run clean",
+    "dev": "tsc --watch",
+    "start": "node dist/index.js",
+    "example": "node example.js",
+    "lint": "eslint src/**/*.ts",
+    "lint:fix": "eslint src/**/*.ts --fix",
+    "format": "prettier --write src/**/*.ts",
+    "format:check": "prettier --check src/**/*.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "thai-national-id",
+    "thai-id-card",
+    "thai-government-id",
+    "smartcard",
+    "card-reader",
+    "typescript",
+    "pc-sc",
+    "event-driven"
+  ],
+  "author": "Thai National ID Card Reader Team",
+  "license": "MIT",
+  "dependencies": {
+    "hex2imagebase64": "^1.0.0",
+    "legacy-encoding": "^3.0.0",
+    "smartcard": "^1.0.37"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.40.0",
+    "@typescript-eslint/parser": "^8.40.0",
+    "eslint": "^9.33.0",
+    "eslint-config-prettier": "^9.1.2",
+    "eslint-plugin-prettier": "^5.5.4",
+    "prettier": "^3.6.2",
+    "typescript": "^5.0.0"
+  }
+}

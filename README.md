@@ -1,5 +1,10 @@
 # Thai National ID Card Reader
 
+[![npm version](https://badge.fury.io/js/thai-national-id-card-reader.svg)](https://badge.fury.io/js/thai-national-id-card-reader)
+[![npm downloads](https://img.shields.io/npm/dm/thai-national-id-card-reader.svg)](https://www.npmjs.com/package/thai-national-id-card-reader)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Node.js Version](https://img.shields.io/node/v/thai-national-id-card-reader.svg)](https://nodejs.org)
+
 A TypeScript library for reading Thai National ID Cards using PC/SC compatible smartcard readers. Built with event-driven architecture, full type safety, and automatic data extraction capabilities.
 
 ## Features

@@ -1,6 +1,6 @@
 {
   "name": "thai-national-id-card-reader",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A TypeScript library for reading Thai National ID Cards with event handling and type safety",
   "main": "dist/index.cjs",
   "module": "dist/index.js",

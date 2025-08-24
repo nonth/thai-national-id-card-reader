@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file. See [Conven
 
 
 
+## <small>1.0.1 (2025-08-24)</small>
+
+* feat: migrate build system from TypeScript to Vite ([c563803](https://github.com/nonth/thai-national-id-card-reader/commit/c563803))
+* docs: add npm badges to README ([dc0c39a](https://github.com/nonth/thai-national-id-card-reader/commit/dc0c39a))
+
 ## 1.0.0 (2025-08-24)
 
 * fix: resolve ESLint and TypeScript errors across codebase ([7fc747a](https://github.com/nonth/thai-national-id-card-reader/commit/7fc747a))

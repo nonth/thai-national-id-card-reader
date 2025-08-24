@@ -11,9 +11,16 @@ declare module 'smartcard' {
     constructor(reader: unknown);
   }
 
+  export class Devices {
+    constructor();
+    on(event: string, listener: (...args: unknown[]) => void): void;
+    removeAllListeners(): void;
+  }
+
   export interface SmartcardModule {
     CommandApdu: typeof CommandApdu;
     Card: typeof Card;
     CardReader: typeof CardReader;
+    Devices: typeof Devices;
   }
 }

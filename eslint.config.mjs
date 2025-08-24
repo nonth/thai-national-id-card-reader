@@ -10,6 +10,9 @@ export default [
   js.configs.recommended,
   prettierConfig,
   {
+    ignores: ['dist/**', 'node_modules/**'],
+  },
+  {
     files: ['**/*.ts'],
     languageOptions: {
       parser: tsparser,

@@ -13,8 +13,7 @@ import {
 } from './types';
 import { getLaser } from './utils/reader';
 
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const { Devices } = require('smartcard');
+import { Devices } from 'smartcard';
 
 /**
  * Thai National ID Card Reader

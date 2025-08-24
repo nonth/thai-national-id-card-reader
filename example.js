@@ -1,5 +1,5 @@
 // Simple JavaScript example that can be run after building
-const { ThaiIdCardReader } = require('./dist/index.js');
+const { ThaiIdCardReader } = require('./dist/index.cjs');
 
 console.log('🚀 Thai National ID Card Reader - JavaScript Example');
 console.log('Make sure you have built the project: npm run build');

@@ -1,6 +1,6 @@
 export { ThaiIdCardReader } from './thai-id-card-reader';
 export { CardReaderEventEmitter } from './event-emitter';
-export * from './types';
+export * from './types/index';
 
 // For backward compatibility and ease of use
 export { ThaiIdCardReader as default } from './thai-id-card-reader';

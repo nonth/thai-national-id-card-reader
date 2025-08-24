@@ -19,7 +19,7 @@ const { Devices } = require('smartcard');
 /**
  * Thai National ID Card Reader
  *
- * A comprehensive library for reading Thai National ID Cards using PC/SC compatible smartcard readers.
+ * A library for reading Thai National ID Cards using PC/SC compatible smartcard readers.
  * Provides event-driven architecture with full TypeScript support and automatic data extraction.
  */
 export class ThaiIdCardReader extends CardReaderEventEmitter {

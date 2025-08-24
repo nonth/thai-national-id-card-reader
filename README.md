@@ -1,6 +1,6 @@
 # Thai National ID Card Reader
 
-A modern, comprehensive TypeScript library for reading Thai National ID Cards using PC/SC compatible smartcard readers. Built with event-driven architecture, full type safety, and automatic data extraction capabilities.
+A TypeScript library for reading Thai National ID Cards using PC/SC compatible smartcard readers. Built with event-driven architecture, full type safety, and automatic data extraction capabilities.
 
 ## Features
 

@@ -1,7 +1,7 @@
 /**
  * Thai National ID Card Reader - Type Definitions
  *
- * Comprehensive TypeScript interfaces and types for reading Thai National ID Cards
+ * TypeScript interfaces and types for reading Thai National ID Cards
  * with full type safety and documentation for all data structures and events.
  */
 

@@ -5,7 +5,7 @@ import { CardReaderEvents, EventListener } from './types';
 /**
  * Enhanced EventEmitter with full TypeScript support for Thai National ID Card Reader events
  *
- * Provides type-safe event handling with comprehensive typing for all card reader events,
+ * Provides type-safe event handling with typing for all card reader events,
  * ensuring compile-time safety and excellent developer experience with IntelliSense.
  */
 export class CardReaderEventEmitter extends NodeEventEmitter {

@@ -1,19 +1,17 @@
 import { EventEmitter as NodeEventEmitter } from 'events';
-import { 
-  CardReaderEvents, 
-  EventListener 
-} from './types';
+
+import { CardReaderEvents, EventListener } from './types';
 
 /**
  * Enhanced EventEmitter with full TypeScript support for Thai National ID Card Reader events
- * 
+ *
  * Provides type-safe event handling with comprehensive typing for all card reader events,
  * ensuring compile-time safety and excellent developer experience with IntelliSense.
  */
 export class CardReaderEventEmitter extends NodeEventEmitter {
   constructor() {
     super();
-    
+
     // Set maximum listeners to prevent memory leak warnings for applications
     // that may need to register multiple listeners for the same event
     this.setMaxListeners(20);
@@ -25,10 +23,7 @@ export class CardReaderEventEmitter extends NodeEventEmitter {
    * @param listener - The typed event listener function
    * @returns This instance for chaining
    */
-  on<K extends keyof CardReaderEvents>(
-    event: K, 
-    listener: EventListener<CardReaderEvents[K]>
-  ): this {
+  on<K extends keyof CardReaderEvents>(event: K, listener: EventListener<CardReaderEvents[K]>): this {
     return super.on(event, listener);
   }
 
@@ -38,10 +33,7 @@ export class CardReaderEventEmitter extends NodeEventEmitter {
    * @param data - The typed event data
    * @returns True if the event had listeners, false otherwise
    */
-  emit<K extends keyof CardReaderEvents>(
-    event: K, 
-    data: CardReaderEvents[K]
-  ): boolean {
+  emit<K extends keyof CardReaderEvents>(event: K, data: CardReaderEvents[K]): boolean {
     return super.emit(event, data);
   }
 
@@ -51,10 +43,7 @@ export class CardReaderEventEmitter extends NodeEventEmitter {
    * @param listener - The specific listener to remove
    * @returns This instance for chaining
    */
-  off<K extends keyof CardReaderEvents>(
-    event: K, 
-    listener: EventListener<CardReaderEvents[K]>
-  ): this {
+  off<K extends keyof CardReaderEvents>(event: K, listener: EventListener<CardReaderEvents[K]>): this {
     return super.off(event, listener);
   }
 
@@ -64,10 +53,7 @@ export class CardReaderEventEmitter extends NodeEventEmitter {
    * @param listener - The typed event listener function (called only once)
    * @returns This instance for chaining
    */
-  once<K extends keyof CardReaderEvents>(
-    event: K, 
-    listener: EventListener<CardReaderEvents[K]>
-  ): this {
+  once<K extends keyof CardReaderEvents>(event: K, listener: EventListener<CardReaderEvents[K]>): this {
     return super.once(event, listener);
   }
 
@@ -94,8 +80,8 @@ export class CardReaderEventEmitter extends NodeEventEmitter {
    * @param event - The event name
    * @returns Array of listener functions
    */
-  listeners(event: keyof CardReaderEvents): Function[] {
-    return super.listeners(event);
+  listeners(event: keyof CardReaderEvents): ((..._args: unknown[]) => void)[] {
+    return super.listeners(event) as ((..._args: unknown[]) => void)[];
   }
 
   /**
@@ -112,10 +98,7 @@ export class CardReaderEventEmitter extends NodeEventEmitter {
    * @param listener - The typed event listener function
    * @returns This instance for chaining
    */
-  prependListener<K extends keyof CardReaderEvents>(
-    event: K,
-    listener: EventListener<CardReaderEvents[K]>
-  ): this {
+  prependListener<K extends keyof CardReaderEvents>(event: K, listener: EventListener<CardReaderEvents[K]>): this {
     return super.prependListener(event, listener);
   }
 
@@ -125,10 +108,7 @@ export class CardReaderEventEmitter extends NodeEventEmitter {
    * @param listener - The typed event listener function (called only once)
    * @returns This instance for chaining
    */
-  prependOnceListener<K extends keyof CardReaderEvents>(
-    event: K,
-    listener: EventListener<CardReaderEvents[K]>
-  ): this {
+  prependOnceListener<K extends keyof CardReaderEvents>(event: K, listener: EventListener<CardReaderEvents[K]>): this {
     return super.prependOnceListener(event, listener);
   }
 }

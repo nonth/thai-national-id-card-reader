@@ -1,8 +1,6 @@
-const { Devices, CommandApdu } = require('smartcard');
-import { CardReaderEventEmitter } from './event-emitter';
-import { PersonalApplet } from './applets/personal-applet';
 import { NhsoApplet } from './applets/nhso-applet';
-import { getLaser } from './utils/reader';
+import { PersonalApplet } from './applets/personal-applet';
+import { CardReaderEventEmitter } from './event-emitter';
 import {
   CardReaderOptions,
   QueryField,
@@ -11,8 +9,12 @@ import {
   CardDataEvent,
   CardErrorEvent,
   CardRemovedEvent,
-  DeviceEvent
+  DeviceEvent,
 } from './types';
+import { getLaser } from './utils/reader';
+
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const { Devices } = require('smartcard');
 
 /**
  * Thai National ID Card Reader
@@ -22,25 +24,28 @@ import {
  */
 export class ThaiIdCardReader extends CardReaderEventEmitter {
   // Core properties
-  private devices: any;
+  private devices: {
+    on: (_event: string, _handler: (_event: unknown) => void) => void;
+    removeAllListeners: () => void;
+  } | null = null;
   private readonly options: CardReaderOptions;
   private isInitialized = false;
   private cardInserted = false;
 
   // All available data fields that can be read from Thai National ID Cards
   private static readonly ALL_FIELDS: QueryField[] = [
-    'cid',        // Citizen ID (13 digits)
-    'name',       // Thai name
-    'nameEn',     // English name
-    'dob',        // Date of birth
-    'gender',     // Gender
-    'issuer',     // Card issuer
-    'issueDate',  // Issue date
+    'cid', // Citizen ID (13 digits)
+    'name', // Thai name
+    'nameEn', // English name
+    'dob', // Date of birth
+    'gender', // Gender
+    'issuer', // Card issuer
+    'issueDate', // Issue date
     'expireDate', // Expiration date
-    'address',    // Full address
-    'photo',      // Base64 encoded photo
-    'nhso',       // Health insurance data
-    'laserId',    // Laser engraved ID
+    'address', // Full address
+    'photo', // Base64 encoded photo
+    'nhso', // Health insurance data
+    'laserId', // Laser engraved ID
   ];
 
   // Status codes for different event types
@@ -163,6 +168,9 @@ export class ThaiIdCardReader extends CardReaderEventEmitter {
    * Register listeners for device events (connect/disconnect)
    */
   private registerDeviceListeners(): void {
+    if (!this.devices) {
+      throw new Error('Devices not initialized');
+    }
     this.devices.on('device-activated', this.handleDeviceConnected.bind(this));
     this.devices.on('device-deactivated', this.handleDeviceDisconnected.bind(this));
     this.devices.on('error', this.handleDeviceError.bind(this));
@@ -171,20 +179,25 @@ export class ThaiIdCardReader extends CardReaderEventEmitter {
   /**
    * Handle device connection (card reader connected)
    */
-  private handleDeviceConnected(event: any): void {
-    const { device, devices } = event;
+  private handleDeviceConnected(event: unknown): void {
+    const { device, devices } = event as { device: unknown; devices: unknown };
     const message = `Card reader '${device}' connected and ready`;
 
-    this.logDebug('Device activated', { device: device.toString(), totalDevices: Object.keys(devices).length });
+    const deviceStr = String(device);
+    const devicesObj = devices as Record<string, unknown>;
+    this.logDebug('Device activated', {
+      device: deviceStr,
+      totalDevices: Object.keys(devicesObj).length,
+    });
 
     const deviceEvent: DeviceEvent = {
       status: ThaiIdCardReader.STATUS.DEVICE_ACTIVATED,
       description: 'Device Activated',
       data: {
         message,
-        device: device.toString(),
-        devices: Object.values(devices).map((d: unknown) => String(d))
-      }
+        device: deviceStr,
+        devices: Object.values(devicesObj).map((d: unknown) => String(d)),
+      },
     };
 
     this.emit('device-connected', deviceEvent);
@@ -194,8 +207,9 @@ export class ThaiIdCardReader extends CardReaderEventEmitter {
   /**
    * Handle device disconnection (card reader disconnected)
    */
-  private handleDeviceDisconnected(event: any): void {
-    const message = `Card reader '${event.device}' disconnected`;
+  private handleDeviceDisconnected(event: unknown): void {
+    const eventData = event as { device?: { toString: () => string }; devices?: unknown };
+    const message = `Card reader '${eventData.device}' disconnected`;
     this.logError(message);
 
     const deviceEvent: DeviceEvent = {
@@ -203,9 +217,11 @@ export class ThaiIdCardReader extends CardReaderEventEmitter {
       description: 'Device Deactivated',
       data: {
         message,
-        device: event.device?.toString(),
-        devices: event.devices ? Object.values(event.devices).map((d: unknown) => String(d)) : []
-      }
+        device: eventData.device?.toString(),
+        devices: eventData.devices
+          ? Object.values(eventData.devices as Record<string, unknown>).map((d: unknown) => String(d))
+          : [],
+      },
     };
 
     this.emit('device-disconnected', deviceEvent);
@@ -215,8 +231,9 @@ export class ThaiIdCardReader extends CardReaderEventEmitter {
   /**
    * Handle device errors
    */
-  private handleDeviceError(error: any): void {
-    const message = `Device error: ${error.error}`;
+  private handleDeviceError(error: unknown): void {
+    const errorData = error as { error: unknown };
+    const message = `Device error: ${errorData.error}`;
     this.logError(message, error);
 
     const errorEvent: CardErrorEvent = {
@@ -224,8 +241,8 @@ export class ThaiIdCardReader extends CardReaderEventEmitter {
       description: 'Device Error',
       data: {
         message,
-        error: error.error
-      }
+        error: errorData.error,
+      },
     };
 
     this.emit('card-error', errorEvent);
@@ -238,17 +255,20 @@ export class ThaiIdCardReader extends CardReaderEventEmitter {
   /**
    * Register listeners for card events (insert/remove/error)
    */
-  private registerCardListeners(device: any): void {
-    device.on('card-inserted', this.handleCardInserted.bind(this));
-    device.on('card-removed', this.handleCardRemoved.bind(this));
-    device.on('error', this.handleCardError.bind(this));
+  private registerCardListeners(device: unknown): void {
+    const deviceWithHandlers = device as {
+      on: (_event: string, _handler: (_event: unknown) => void) => void;
+    };
+    deviceWithHandlers.on('card-inserted', this.handleCardInserted.bind(this));
+    deviceWithHandlers.on('card-removed', this.handleCardRemoved.bind(this));
+    deviceWithHandlers.on('error', this.handleCardError.bind(this));
   }
 
   /**
    * Handle card insertion and start reading process
    */
-  private async handleCardInserted(event: any): Promise<void> {
-    const { card, device } = event;
+  private async handleCardInserted(event: unknown): Promise<void> {
+    const { card, device } = event as { card: { getAtr: () => Buffer }; device?: { toString: () => string } };
     const atr = card.getAtr();
     const message = `Thai National ID Card detected (ATR: ${atr})`;
 
@@ -261,8 +281,8 @@ export class ThaiIdCardReader extends CardReaderEventEmitter {
       data: {
         message,
         atr: atr.toString(),
-        device: device?.toString()
-      }
+        device: device?.toString(),
+      },
     };
 
     this.emit('card-inserted', insertedEvent);
@@ -280,20 +300,21 @@ export class ThaiIdCardReader extends CardReaderEventEmitter {
   /**
    * Handle card removal (only if card was previously inserted)
    */
-  private handleCardRemoved(event: any): void {
+  private handleCardRemoved(event: unknown): void {
     // Only emit card-removed event if a card was actually inserted
     // This prevents spurious events immediately after device activation
     if (this.cardInserted) {
       const message = `Thai National ID Card removed`;
-      this.logDebug(message, { device: event.name?.toString() });
+      const eventData = event as { name?: { toString: () => string } };
+      this.logDebug(message, { device: eventData.name?.toString() });
 
       const removedEvent: CardRemovedEvent = {
         status: ThaiIdCardReader.STATUS.CARD_REMOVED,
         description: 'Card Removed',
         data: {
           message,
-          device: event.name?.toString()
-        }
+          device: eventData.name?.toString(),
+        },
       };
 
       this.emit('card-removed', removedEvent);
@@ -304,7 +325,7 @@ export class ThaiIdCardReader extends CardReaderEventEmitter {
   /**
    * Handle card errors (incorrect card type, etc.)
    */
-  private handleCardError(event: any): void {
+  private handleCardError(event: unknown): void {
     const message = 'Incorrect card type - Please insert a valid Thai National ID Card';
     this.logError(message, event);
 
@@ -313,8 +334,8 @@ export class ThaiIdCardReader extends CardReaderEventEmitter {
       description: 'Incorrect Card Type',
       data: {
         message,
-        error: event
-      }
+        error: event,
+      },
     };
 
     this.emit('card-incorrect', errorEvent);
@@ -327,20 +348,25 @@ export class ThaiIdCardReader extends CardReaderEventEmitter {
   /**
    * Set up debug listeners for card communication
    */
-  private setupCardDebugListeners(card: any): void {
-    card.on('command-issued', (event: any) => {
-      this.logDebug(`APDU Command sent: ${event.command}`);
+  private setupCardDebugListeners(card: unknown): void {
+    const cardWithHandlers = card as {
+      on: (_event: string, _handler: (_event: unknown) => void) => void;
+    };
+    cardWithHandlers.on('command-issued', (event: unknown) => {
+      const eventData = event as { command: unknown };
+      this.logDebug(`APDU Command sent: ${eventData.command}`);
     });
 
-    card.on('response-received', (event: any) => {
-      this.logDebug(`APDU Response received: ${event.response}`);
+    cardWithHandlers.on('response-received', (event: unknown) => {
+      const eventData = event as { response: unknown };
+      this.logDebug(`APDU Response received: ${eventData.response}`);
     });
   }
 
   /**
    * Process card data reading and emit results
    */
-  private async processCardData(card: any): Promise<void> {
+  private async processCardData(card: unknown): Promise<void> {
     try {
       this.logDebug('Starting card data extraction...');
       const data = await this.extractCardData(card);
@@ -350,7 +376,7 @@ export class ThaiIdCardReader extends CardReaderEventEmitter {
       const dataEvent: CardDataEvent = {
         status: ThaiIdCardReader.STATUS.SUCCESS,
         description: 'Data Read Successfully',
-        data
+        data,
       };
 
       this.emit('card-data', dataEvent);
@@ -362,7 +388,7 @@ export class ThaiIdCardReader extends CardReaderEventEmitter {
   /**
    * Extract all data from the Thai National ID Card
    */
-  private async extractCardData(card: any): Promise<ThaiIdCardData> {
+  private async extractCardData(card: unknown): Promise<ThaiIdCardData> {
     const requestCommand = this.determineRequestCommand(card);
     let data: ThaiIdCardData = {};
 
@@ -381,11 +407,12 @@ export class ThaiIdCardReader extends CardReaderEventEmitter {
   /**
    * Determine the correct request command based on card ATR
    */
-  private determineRequestCommand(card: any): number[] {
-    const atr = card.getAtr();
+  private determineRequestCommand(card: unknown): number[] {
+    const cardWithAtr = card as { getAtr: () => Buffer };
+    const atr = cardWithAtr.getAtr();
 
     // Different ATR patterns require different request commands
-    if (atr.slice(0, 4) === Buffer.from([0x3b, 0x67]).toString('hex')) {
+    if (atr.toString('hex').slice(0, 8) === Buffer.from([0x3b, 0x67]).toString('hex')) {
       return [0x00, 0xc0, 0x00, 0x01];
     }
 
@@ -395,13 +422,18 @@ export class ThaiIdCardReader extends CardReaderEventEmitter {
   /**
    * Extract personal information from the card
    */
-  private async extractPersonalData(card: any, requestCommand: number[], currentData: ThaiIdCardData): Promise<ThaiIdCardData> {
+  private async extractPersonalData(
+    card: unknown,
+    requestCommand: number[],
+    currentData: ThaiIdCardData,
+  ): Promise<ThaiIdCardData> {
     try {
-      const personalApplet = new PersonalApplet(card, requestCommand);
-      const personalFields = ThaiIdCardReader.ALL_FIELDS.filter(field => field !== 'nhso' && field !== 'laserId');
+      const personalApplet = new PersonalApplet(card as import('./types').Card, requestCommand);
+      const personalFields = ThaiIdCardReader.ALL_FIELDS.filter((field) => field !== 'nhso' && field !== 'laserId');
 
       if (personalFields.length > 0) {
         const personalData = await personalApplet.getInfo(personalFields);
+
         return { ...currentData, ...personalData };
       }
 
@@ -415,14 +447,20 @@ export class ThaiIdCardReader extends CardReaderEventEmitter {
   /**
    * Extract health insurance data (NHSO) from the card
    */
-  private async extractHealthData(card: any, requestCommand: number[], currentData: ThaiIdCardData): Promise<ThaiIdCardData> {
+  private async extractHealthData(
+    card: unknown,
+    requestCommand: number[],
+    currentData: ThaiIdCardData,
+  ): Promise<ThaiIdCardData> {
     try {
-      const nhsoApplet = new NhsoApplet(card, requestCommand);
+      const nhsoApplet = new NhsoApplet(card as import('./types').Card, requestCommand);
       const nhsoData = await nhsoApplet.getInfo();
+
       return { ...currentData, nhso: nhsoData };
     } catch (error) {
       this.logDebug('NHSO data not available or failed to read', error);
       // NHSO data is optional, don't throw error
+
       return currentData;
     }
   }
@@ -430,13 +468,19 @@ export class ThaiIdCardReader extends CardReaderEventEmitter {
   /**
    * Extract laser ID from the card
    */
-  private async extractLaserData(card: any, requestCommand: number[], currentData: ThaiIdCardData): Promise<ThaiIdCardData> {
+  private async extractLaserData(
+    card: unknown,
+    requestCommand: number[],
+    currentData: ThaiIdCardData,
+  ): Promise<ThaiIdCardData> {
     try {
-      const laserId = await getLaser(card, requestCommand);
+      const laserId = await getLaser(card as import('./types').Card, requestCommand);
+
       return { ...currentData, laserId };
     } catch (error) {
       this.logDebug('Laser ID not available or failed to read', error);
       // Laser ID is optional, return empty string instead of throwing
+
       return { ...currentData, laserId: '' };
     }
   }
@@ -453,8 +497,8 @@ export class ThaiIdCardReader extends CardReaderEventEmitter {
       description: 'Card Read Error',
       data: {
         message,
-        error: error instanceof Error ? error : new Error(String(error))
-      }
+        error: error instanceof Error ? error : new Error(String(error)),
+      },
     };
 
     this.emit('card-error', errorEvent);

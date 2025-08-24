@@ -313,12 +313,7 @@ export class ThaiIdCardReaderError extends Error {
   /** Original error that caused this error (if any) */
   public readonly cause?: Error;
 
-  constructor(
-    message: string,
-    code: string = 'THAI_ID_CARD_ERROR',
-    status: number = 500,
-    cause?: Error
-  ) {
+  constructor(message: string, code: string = 'THAI_ID_CARD_ERROR', status: number = 500, cause?: Error) {
     super(message);
     this.name = 'ThaiIdCardReaderError';
     this.code = code;

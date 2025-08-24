@@ -33,7 +33,7 @@ cardReader.on('card-error', (event) => {
   console.error('❌ Error:', event.data.message);
 });
 
-cardReader.on('card-removed', (event) => {
+cardReader.on('card-removed', (_event) => {
   console.log('📤 Card removed');
 });
 

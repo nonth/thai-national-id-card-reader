@@ -1,5 +1,6 @@
-import { CommandApdu } from 'smartcard';
 import legacy from 'legacy-encoding';
+import { CommandApdu } from 'smartcard';
+
 import { apduNhso } from '../apdu/nhso';
 import { NhsoData, Card } from '../types';
 import { getData } from '../utils/reader';
@@ -37,9 +38,7 @@ export class NhsoApplet {
 
       return nhsoData;
     } catch (error) {
-      throw new Error(
-        `Failed to read NHSO data: ${error instanceof Error ? error.message : 'Unknown error'}`
-      );
+      throw new Error(`Failed to read NHSO data: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   }
 
@@ -50,7 +49,7 @@ export class NhsoApplet {
     await this.card.issueCommand(
       new CommandApdu({
         bytes: [...apduNhso.SELECT],
-      })
+      }),
     );
   }
 
@@ -62,98 +61,38 @@ export class NhsoApplet {
 
     try {
       // Extract main insurance level
-      const mainInsclData = await getData(
-        this.card,
-        [...apduNhso.CMD_MAIN_INSCL],
-        this.requestCommand
-      );
-      nhsoData.mainInscl = legacy
-        .decode(mainInsclData, 'tis620')
-        .slice(0, -2)
-        .toString()
-        .trim();
+      const mainInsclData = await getData(this.card, [...apduNhso.CMD_MAIN_INSCL], this.requestCommand);
+      nhsoData.mainInscl = legacy.decode(mainInsclData, 'tis620').slice(0, -2).toString().trim();
 
       // Extract sub insurance level
-      const subInsclData = await getData(
-        this.card,
-        [...apduNhso.CMD_SUB_INSCL],
-        this.requestCommand
-      );
-      nhsoData.subInscl = legacy
-        .decode(subInsclData, 'tis620')
-        .slice(0, -2)
-        .toString()
-        .trim();
+      const subInsclData = await getData(this.card, [...apduNhso.CMD_SUB_INSCL], this.requestCommand);
+      nhsoData.subInscl = legacy.decode(subInsclData, 'tis620').slice(0, -2).toString().trim();
 
       // Extract main hospital name
-      const mainHospitalData = await getData(
-        this.card,
-        [...apduNhso.CMD_MAIN_HOSPITAL_NAME],
-        this.requestCommand
-      );
-      nhsoData.mainHospitalName = legacy
-        .decode(mainHospitalData, 'tis620')
-        .slice(0, -2)
-        .toString()
-        .trim();
+      const mainHospitalData = await getData(this.card, [...apduNhso.CMD_MAIN_HOSPITAL_NAME], this.requestCommand);
+      nhsoData.mainHospitalName = legacy.decode(mainHospitalData, 'tis620').slice(0, -2).toString().trim();
 
       // Extract sub hospital name
-      const subHospitalData = await getData(
-        this.card,
-        [...apduNhso.CMD_SUB_HOSPITAL_NAME],
-        this.requestCommand
-      );
-      nhsoData.subHospitalName = legacy
-        .decode(subHospitalData, 'tis620')
-        .slice(0, -2)
-        .toString()
-        .trim();
+      const subHospitalData = await getData(this.card, [...apduNhso.CMD_SUB_HOSPITAL_NAME], this.requestCommand);
+      nhsoData.subHospitalName = legacy.decode(subHospitalData, 'tis620').slice(0, -2).toString().trim();
 
       // Extract paid type
-      const paidTypeData = await getData(
-        this.card,
-        [...apduNhso.CMD_PAID_TYPE],
-        this.requestCommand
-      );
+      const paidTypeData = await getData(this.card, [...apduNhso.CMD_PAID_TYPE], this.requestCommand);
       nhsoData.paidType = paidTypeData.slice(0, -2).toString('hex');
 
       // Extract dates and convert from Buddhist to Gregorian calendar
-      const issueDateData = await getData(
-        this.card,
-        [...apduNhso.CMD_ISSUE_DATE],
-        this.requestCommand
-      );
-      nhsoData.issueDate = this.convertBuddhistDate(
-        issueDateData.slice(0, -2).toString().trim()
-      );
+      const issueDateData = await getData(this.card, [...apduNhso.CMD_ISSUE_DATE], this.requestCommand);
+      nhsoData.issueDate = this.convertBuddhistDate(issueDateData.slice(0, -2).toString().trim());
 
-      const expireDateData = await getData(
-        this.card,
-        [...apduNhso.CMD_EXPIRE_DATE],
-        this.requestCommand
-      );
-      nhsoData.expireDate = this.convertBuddhistDate(
-        expireDateData.slice(0, -2).toString().trim()
-      );
+      const expireDateData = await getData(this.card, [...apduNhso.CMD_EXPIRE_DATE], this.requestCommand);
+      nhsoData.expireDate = this.convertBuddhistDate(expireDateData.slice(0, -2).toString().trim());
 
-      const updateDateData = await getData(
-        this.card,
-        [...apduNhso.CMD_UPDATE_DATE],
-        this.requestCommand
-      );
-      nhsoData.updateDate = this.convertBuddhistDate(
-        updateDateData.slice(0, -2).toString().trim()
-      );
+      const updateDateData = await getData(this.card, [...apduNhso.CMD_UPDATE_DATE], this.requestCommand);
+      nhsoData.updateDate = this.convertBuddhistDate(updateDateData.slice(0, -2).toString().trim());
 
       // Extract hospital change amount
-      const changeAmountData = await getData(
-        this.card,
-        [...apduNhso.CMD_CHANGE_HOSPITAL_AMOUNT],
-        this.requestCommand
-      );
-      nhsoData.changeHospitalAmount = changeAmountData
-        .slice(0, -2)
-        .toString('hex');
+      const changeAmountData = await getData(this.card, [...apduNhso.CMD_CHANGE_HOSPITAL_AMOUNT], this.requestCommand);
+      nhsoData.changeHospitalAmount = changeAmountData.slice(0, -2).toString('hex');
     } catch (error) {
       // If any field fails, continue with partial data
       console.warn('Some NHSO fields could not be extracted:', error);
@@ -170,6 +109,7 @@ export class NhsoApplet {
   async hasNhsoData(): Promise<boolean> {
     try {
       await this.initializeNhsoCard();
+
       return true;
     } catch {
       return false;

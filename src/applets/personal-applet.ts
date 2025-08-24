@@ -1,9 +1,10 @@
-import { CommandApdu } from 'smartcard';
-import legacy from 'legacy-encoding';
 import hex2imagebase64 from 'hex2imagebase64';
-import { getData } from '../utils/reader';
+import legacy from 'legacy-encoding';
+import { CommandApdu } from 'smartcard';
+
 import { apduPerson } from '../apdu/person';
 import { QueryField, ThaiIdCardData, Card } from '../types';
+import { getData } from '../utils/reader';
 
 /**
  * Personal Information Data Structures
@@ -74,9 +75,7 @@ export class PersonalApplet {
    * @param queryFields - Array of fields to extract from the card
    * @returns Partial Thai ID card data containing requested fields
    */
-  async getInfo(
-    queryFields: QueryField[] = ['cid']
-  ): Promise<Partial<ThaiIdCardData>> {
+  async getInfo(queryFields: QueryField[] = ['cid']): Promise<Partial<ThaiIdCardData>> {
     // Initialize the card for personal data reading
     await this.initializeCard();
 
@@ -88,20 +87,13 @@ export class PersonalApplet {
     // Extract each requested field
     if (requestedFields.cid) extractedData.cid = await this.extractCitizenId();
     if (requestedFields.name) extractedData.name = await this.extractThaiName();
-    if (requestedFields.nameEn)
-      extractedData.nameEn = await this.extractEnglishName();
-    if (requestedFields.dob)
-      extractedData.dob = await this.extractDateOfBirth();
-    if (requestedFields.gender)
-      extractedData.gender = await this.extractGender();
-    if (requestedFields.issuer)
-      extractedData.issuer = await this.extractIssuer();
-    if (requestedFields.issueDate)
-      extractedData.issueDate = await this.extractIssueDate();
-    if (requestedFields.expireDate)
-      extractedData.expireDate = await this.extractExpireDate();
-    if (requestedFields.address)
-      extractedData.address = await this.extractAddress();
+    if (requestedFields.nameEn) extractedData.nameEn = await this.extractEnglishName();
+    if (requestedFields.dob) extractedData.dob = await this.extractDateOfBirth();
+    if (requestedFields.gender) extractedData.gender = await this.extractGender();
+    if (requestedFields.issuer) extractedData.issuer = await this.extractIssuer();
+    if (requestedFields.issueDate) extractedData.issueDate = await this.extractIssueDate();
+    if (requestedFields.expireDate) extractedData.expireDate = await this.extractExpireDate();
+    if (requestedFields.address) extractedData.address = await this.extractAddress();
     if (requestedFields.photo) extractedData.photo = await this.extractPhoto();
 
     return extractedData;
@@ -116,31 +108,26 @@ export class PersonalApplet {
     await this.card.issueCommand(
       new CommandApdu({
         bytes: [...apduPerson.SELECT, ...apduPerson.THAI_CARD],
-      })
+      }),
     );
   }
 
   /**
    * Create efficient field lookup object from query fields array
    */
-  private createFieldLookup(
-    queryFields: QueryField[]
-  ): Record<string, boolean> {
-    return queryFields.reduce(
-      (lookup, field) => ({ ...lookup, [field]: true }),
-      {
-        cid: false,
-        name: false,
-        nameEn: false,
-        dob: false,
-        gender: false,
-        issuer: false,
-        issueDate: false,
-        expireDate: false,
-        address: false,
-        photo: false,
-      }
-    );
+  private createFieldLookup(queryFields: QueryField[]): Record<string, boolean> {
+    return queryFields.reduce((lookup, field) => ({ ...lookup, [field]: true }), {
+      cid: false,
+      name: false,
+      nameEn: false,
+      dob: false,
+      gender: false,
+      issuer: false,
+      issueDate: false,
+      expireDate: false,
+      address: false,
+      photo: false,
+    });
   }
 
   // #endregion
@@ -151,11 +138,8 @@ export class PersonalApplet {
    * Extract citizen ID (13-digit identification number)
    */
   private async extractCitizenId(): Promise<string> {
-    const data = await getData(
-      this.card,
-      apduPerson.CMD_CID,
-      this.requestCommand
-    );
+    const data = await getData(this.card, apduPerson.CMD_CID, this.requestCommand);
+
     return data.slice(0, -2).toString().trim();
   }
 
@@ -163,12 +147,9 @@ export class PersonalApplet {
    * Extract Thai name (full name in Thai script)
    */
   private async extractThaiName(): Promise<string> {
-    const data = await getData(
-      this.card,
-      apduPerson.CMD_THFULLNAME,
-      this.requestCommand
-    );
+    const data = await getData(this.card, apduPerson.CMD_THFULLNAME, this.requestCommand);
     const decodedData = legacy.decode(data, 'tis620');
+
     return this.parseNameComponents(decodedData).fullname;
   }
 
@@ -176,12 +157,9 @@ export class PersonalApplet {
    * Extract English name (full name in English script)
    */
   private async extractEnglishName(): Promise<string> {
-    const data = await getData(
-      this.card,
-      apduPerson.CMD_ENFULLNAME,
-      this.requestCommand
-    );
+    const data = await getData(this.card, apduPerson.CMD_ENFULLNAME, this.requestCommand);
     const decodedData = legacy.decode(data, 'tis620');
+
     return this.parseNameComponents(decodedData).fullname;
   }
 
@@ -189,12 +167,9 @@ export class PersonalApplet {
    * Extract date of birth (converted from Buddhist to Gregorian calendar)
    */
   private async extractDateOfBirth(): Promise<string> {
-    const data = await getData(
-      this.card,
-      apduPerson.CMD_BIRTH,
-      this.requestCommand
-    );
+    const data = await getData(this.card, apduPerson.CMD_BIRTH, this.requestCommand);
     const dateStr = data.slice(0, -2).toString().trim();
+
     return this.convertBuddhistToGregorianDate(dateStr);
   }
 
@@ -202,11 +177,8 @@ export class PersonalApplet {
    * Extract gender (M/F)
    */
   private async extractGender(): Promise<string> {
-    const data = await getData(
-      this.card,
-      apduPerson.CMD_GENDER,
-      this.requestCommand
-    );
+    const data = await getData(this.card, apduPerson.CMD_GENDER, this.requestCommand);
+
     return data.slice(0, -2).toString().trim();
   }
 
@@ -214,11 +186,8 @@ export class PersonalApplet {
    * Extract card issuer information
    */
   private async extractIssuer(): Promise<string> {
-    const data = await getData(
-      this.card,
-      [...apduPerson.CMD_ISSUER],
-      this.requestCommand
-    );
+    const data = await getData(this.card, [...apduPerson.CMD_ISSUER], this.requestCommand);
+
     return legacy.decode(data, 'tis620').slice(0, -2).toString().trim();
   }
 
@@ -226,12 +195,9 @@ export class PersonalApplet {
    * Extract card issue date (converted from Buddhist to Gregorian calendar)
    */
   private async extractIssueDate(): Promise<string> {
-    const data = await getData(
-      this.card,
-      [...apduPerson.CMD_ISSUE],
-      this.requestCommand
-    );
+    const data = await getData(this.card, [...apduPerson.CMD_ISSUE], this.requestCommand);
     const dateStr = data.slice(0, -2).toString().trim();
+
     return this.convertBuddhistToGregorianDate(dateStr);
   }
 
@@ -239,12 +205,9 @@ export class PersonalApplet {
    * Extract card expiration date (converted from Buddhist to Gregorian calendar)
    */
   private async extractExpireDate(): Promise<string> {
-    const data = await getData(
-      this.card,
-      [...apduPerson.CMD_EXPIRE],
-      this.requestCommand
-    );
+    const data = await getData(this.card, [...apduPerson.CMD_EXPIRE], this.requestCommand);
     const dateStr = data.slice(0, -2).toString().trim();
+
     return this.convertBuddhistToGregorianDate(dateStr);
   }
 
@@ -252,11 +215,7 @@ export class PersonalApplet {
    * Extract full address information
    */
   private async extractAddress(): Promise<string> {
-    const data = await getData(
-      this.card,
-      [...apduPerson.CMD_ADDRESS],
-      this.requestCommand
-    );
+    const data = await getData(this.card, [...apduPerson.CMD_ADDRESS], this.requestCommand);
     const decodedData = legacy.decode(data, 'tis620');
     const addressStr = decodedData.slice(0, -2).toString().trim();
 
@@ -265,6 +224,7 @@ export class PersonalApplet {
     }
 
     const addressComponents = this.parseAddressComponents(addressStr);
+
     return addressComponents.fullAddress;
   }
 
@@ -284,6 +244,7 @@ export class PersonalApplet {
 
     // Combine all photo segments and convert to base64
     const photoHex = photoHexParts.join('');
+
     return hex2imagebase64(photoHex);
   }
 
@@ -306,12 +267,7 @@ export class PersonalApplet {
     };
 
     // Create full name from non-empty components
-    components.fullname = [
-      components.prefix,
-      components.firstname,
-      components.middlename,
-      components.lastname,
-    ]
+    components.fullname = [components.prefix, components.firstname, components.middlename, components.lastname]
       .filter((part) => part.length > 0)
       .join(' ')
       .trim();
@@ -330,9 +286,7 @@ export class PersonalApplet {
       moo: this.extractMooNumber(addressParts[1]),
       soi: this.extractSoiName(addressParts[1]),
       street: addressParts.slice(2, -3).join(' ').trim(),
-      subdistrict: this.extractSubdistrict(
-        addressParts[addressParts.length - 3]
-      ),
+      subdistrict: this.extractSubdistrict(addressParts[addressParts.length - 3]),
       district: this.extractDistrict(addressParts[addressParts.length - 2]),
       province: this.extractProvince(addressParts[addressParts.length - 1]),
       fullAddress: '',
@@ -351,9 +305,7 @@ export class PersonalApplet {
    * Extract Moo (village group) number from address part
    */
   private extractMooNumber(addressPart: string = ''): string {
-    return addressPart.startsWith('หมู่ที่')
-      ? addressPart.substring(7).trim()
-      : '';
+    return addressPart.startsWith('หมู่ที่') ? addressPart.substring(7).trim() : '';
   }
 
   /**
@@ -379,6 +331,7 @@ export class PersonalApplet {
     } else if (addressPart.length >= 5) {
       return addressPart.substring(5).trim();
     }
+
     return '';
   }
 
@@ -394,9 +347,7 @@ export class PersonalApplet {
    */
   private convertBuddhistToGregorianDate(buddhistDateStr: string): string {
     if (buddhistDateStr.length !== 8) {
-      throw new Error(
-        `Invalid date format: ${buddhistDateStr}. Expected YYYYMMDD.`
-      );
+      throw new Error(`Invalid date format: ${buddhistDateStr}. Expected YYYYMMDD.`);
     }
 
     const buddhistYear = parseInt(buddhistDateStr.slice(0, 4), 10);

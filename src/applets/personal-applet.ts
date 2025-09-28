@@ -1,6 +1,8 @@
 import hex2imagebase64 from 'hex2imagebase64';
 import legacy from 'legacy-encoding';
-import { CommandApdu } from 'smartcard';
+import smartcard from 'smartcard';
+
+const { CommandApdu } = smartcard;
 
 import { apduPerson } from '../apdu/person';
 import { QueryField, ThaiIdCardData, Card } from '../types';

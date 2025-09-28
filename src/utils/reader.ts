@@ -1,4 +1,6 @@
-import { CommandApdu } from 'smartcard';
+import smartcard from 'smartcard';
+
+const { CommandApdu } = smartcard;
 
 import { Card } from '../types';
 

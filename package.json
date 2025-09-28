@@ -1,6 +1,7 @@
 {
   "name": "thai-national-id-card-reader",
   "version": "1.0.1",
+  "type": "module",
   "description": "A TypeScript library for reading Thai National ID Cards with event handling and type safety",
   "main": "dist/index.cjs",
   "module": "dist/index.js",
@@ -9,8 +10,10 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
-    }
+      "require": "./dist/index.cjs",
+      "default": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
   },
   "files": [
     "dist/",
@@ -72,6 +75,7 @@
     "@commitlint/cli": "^19.8.1",
     "@commitlint/config-conventional": "^19.8.1",
     "@release-it/conventional-changelog": "^9.0.4",
+    "@rollup/plugin-commonjs": "^28.0.6",
     "@types/node": "^20.19.11",
     "@typescript-eslint/eslint-plugin": "^8.40.0",
     "@typescript-eslint/parser": "^8.40.0",

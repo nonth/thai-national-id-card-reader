@@ -10,6 +10,7 @@ A TypeScript library for reading Thai National ID Cards using PC/SC compatible s
 ## Features
 
 - ✅ **Full TypeScript Support**: Complete type safety and IntelliSense support
+- ✅ **Dual Module Support**: Both CommonJS (`require()`) and ESM (`import`) compatibility
 - ✅ **Event-Driven Architecture**: Clean EventEmitter-based integration
 - ✅ **Automatic Data Extraction**: Reads all available card data by default
 - ✅ **Smart Event Management**: Intelligent card state tracking with no spurious events
@@ -20,12 +21,25 @@ A TypeScript library for reading Thai National ID Cards using PC/SC compatible s
 ## Installation
 
 ```bash
-# Install dependencies
-npm install
+# Install from npm
+npm install thai-national-id-card-reader
 
-# Build the library
+# Or install for development
+git clone https://github.com/your-username/thai-national-id-card-reader.git
+cd thai-national-id-card-reader
+npm install
 npm run build
 ```
+
+### Module Formats
+
+The library is built to support both CommonJS and ESM module systems:
+
+- **CommonJS**: `dist/index.cjs` - For use with `require()`
+- **ESM**: `dist/index.js` - For use with `import`
+- **TypeScript**: `dist/index.d.ts` - Type definitions for both formats
+
+The package.json uses conditional exports to automatically serve the correct format based on how you import it.
 
 ## Prerequisites
 
@@ -48,9 +62,9 @@ sudo systemctl enable pcscd
 
 ## Quick Start
 
-### Basic Usage (CommonJS)
+### CommonJS Usage
 ```javascript
-const { ThaiIdCardReader } = require('./dist/index.js');
+const { ThaiIdCardReader } = require('thai-national-id-card-reader');
 
 // Create reader instance - automatically reads ALL fields
 const cardReader = new ThaiIdCardReader({
@@ -105,9 +119,44 @@ process.on('SIGINT', () => {
 });
 ```
 
+### ESM Usage
+```javascript
+import { ThaiIdCardReader } from 'thai-national-id-card-reader';
+
+// Create reader instance - automatically reads ALL fields
+const cardReader = new ThaiIdCardReader({
+  debug: false,              // Enable for troubleshooting
+  exitOnReadError: false     // Don't exit on read errors
+});
+
+// Set up event listeners (same as CommonJS example)
+cardReader.on('device-connected', (event) => {
+  console.log('✅ Card reader connected:', event.data.message);
+});
+
+cardReader.on('card-data', (event) => {
+  const data = event.data;
+  console.log('📄 Thai National ID Card Data:');
+  console.log('├─ Citizen ID:', data.cid);
+  console.log('├─ Thai Name:', data.name);
+  // ... rest of data processing
+});
+
+// Initialize and start reading
+cardReader.init();
+console.log('🚀 Thai National ID Card Reader initialized. Insert a card...');
+
+// Graceful shutdown
+process.on('SIGINT', () => {
+  console.log('\n🛑 Shutting down...');
+  cardReader.destroy();
+  process.exit(0);
+});
+```
+
 ### TypeScript Usage
 ```typescript
-import { ThaiIdCardReader, ThaiIdCardData, CardDataEvent } from './dist';
+import { ThaiIdCardReader, ThaiIdCardData, CardDataEvent } from 'thai-national-id-card-reader';
 
 const cardReader = new ThaiIdCardReader({
   debug: true,
@@ -149,6 +198,60 @@ cardReader.init();
 | `card-error` | Error during operations | When card reading or communication fails |
 | `card-incorrect` | Invalid card type | When non-Thai ID card is inserted |
 | `device-disconnected` | Card reader disconnected | When reader is unplugged or becomes unavailable |
+
+## Module Formats
+
+This library supports both CommonJS and ESM module formats, ensuring compatibility with different Node.js environments and bundlers.
+
+### CommonJS (require)
+```javascript
+// Works in traditional Node.js environments
+const { ThaiIdCardReader, ErrorCodes } = require('thai-national-id-card-reader');
+
+// Also works with default import
+const ThaiIdCardReader = require('thai-national-id-card-reader').default;
+```
+
+### ESM (import)
+```javascript
+// Works in modern Node.js with "type": "module" or .mjs files
+import { ThaiIdCardReader, ErrorCodes } from 'thai-national-id-card-reader';
+
+// Also works with default import
+import ThaiIdCardReader from 'thai-national-id-card-reader';
+```
+
+### TypeScript
+```typescript
+// Full TypeScript support with both import styles
+import { ThaiIdCardReader, ThaiIdCardData, CardDataEvent } from 'thai-national-id-card-reader';
+
+// Or with require (in .ts files with CommonJS target)
+import ThaiIdCardReader = require('thai-national-id-card-reader');
+```
+
+### Build Outputs
+When you install the package, you get:
+- `dist/index.cjs` - CommonJS build with proper `exports` object
+- `dist/index.js` - ESM build with standard ES module exports
+- `dist/index.d.ts` - TypeScript type definitions for both formats
+
+The package.json uses conditional exports to automatically serve the correct format:
+```json
+{
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs",
+      "default": "./dist/index.js"
+    }
+  }
+}
+```
 
 ## Card Data Structure
 
@@ -198,8 +301,10 @@ interface CardReaderOptions {
 
 ## Running the Example
 
+For development and testing purposes, you can run the included example:
+
 ```bash
-# Build the project
+# Build the project (for development)
 npm run build
 
 # Run the working example
@@ -208,6 +313,8 @@ npm run example
 # Or run directly
 node example.js
 ```
+
+**Note**: This is for testing the library during development. When using the library in your own project, import it as shown in the [Quick Start](#quick-start) section.
 
 ## API Reference
 

@@ -1,3 +1,5 @@
+import smartcard from 'smartcard';
+
 import { NhsoApplet } from './applets/nhso-applet';
 import { PersonalApplet } from './applets/personal-applet';
 import { CardReaderEventEmitter } from './event-emitter';
@@ -13,7 +15,7 @@ import {
 } from './types';
 import { getLaser } from './utils/reader';
 
-import { Devices } from 'smartcard';
+const { Devices } = smartcard;
 
 /**
  * Thai National ID Card Reader

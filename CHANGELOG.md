@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file. See [Conven
 
 
 
+## <small>1.0.2 (2025-09-28)</small>
+
+* feat: add dual module support for CommonJS and ESM ([65c0d24](https://github.com/nonth/thai-national-id-card-reader/commit/65c0d24))
+
 ## <small>1.0.1 (2025-08-24)</small>
 
 * feat: migrate build system from TypeScript to Vite ([c563803](https://github.com/nonth/thai-national-id-card-reader/commit/c563803))

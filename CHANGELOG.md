@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file. See [Conven
 
 
 
+## <small>1.0.4 (2025-10-07)</small>
+
+* fix: improve patch script to find pcsclite in multiple locations ([08bf215](https://github.com/nonth/thai-national-id-card-reader/commit/08bf215))
+
 ## <small>1.0.3 (2025-10-07)</small>
 
 * feat: add C++20 compatibility patch for Electron 38+ support ([f280248](https://github.com/nonth/thai-national-id-card-reader/commit/f280248))

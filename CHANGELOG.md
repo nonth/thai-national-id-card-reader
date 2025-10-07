@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file. See [Conven
 
 
 
+## <small>1.0.3 (2025-10-07)</small>
+
+* feat: add C++20 compatibility patch for Electron 38+ support ([f280248](https://github.com/nonth/thai-national-id-card-reader/commit/f280248))
+
 ## <small>1.0.2 (2025-09-28)</small>
 
 * feat: add dual module support for CommonJS and ESM ([65c0d24](https://github.com/nonth/thai-national-id-card-reader/commit/65c0d24))

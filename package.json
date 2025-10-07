@@ -17,6 +17,7 @@
   },
   "files": [
     "dist/",
+    "scripts/",
     "LICENSE",
     "README.md"
   ],
@@ -27,6 +28,7 @@
     "dev": "vite build --watch",
     "start": "node dist/index.cjs",
     "example": "node example.js",
+    "postinstall": "node scripts/patch-pcsclite.cjs",
     "lint": "eslint src/**/*.ts",
     "lint:fix": "eslint src/**/*.ts --fix",
     "format": "prettier --write src/**/*.ts",

@@ -8,17 +8,26 @@
 const fs = require('fs');
 const path = require('path');
 
-const PCSCLITE_PATH = path.join(
-  __dirname,
-  '..',
-  'node_modules',
-  '@pokusew',
-  'pcsclite',
-  'binding.gyp'
-);
+// Try multiple possible paths for pcsclite
+const POSSIBLE_PATHS = [
+  // When run from within thai-national-id-card-reader
+  path.join(__dirname, '..', 'node_modules', '@pokusew', 'pcsclite', 'binding.gyp'),
+  // When run from parent project
+  path.join(process.cwd(), 'node_modules', '@pokusew', 'pcsclite', 'binding.gyp'),
+  // When thai-national-id-card-reader is a dependency
+  path.join(__dirname, '..', '..', '..', '@pokusew', 'pcsclite', 'binding.gyp'),
+];
+
+let PCSCLITE_PATH = null;
+for (const possiblePath of POSSIBLE_PATHS) {
+  if (fs.existsSync(possiblePath)) {
+    PCSCLITE_PATH = possiblePath;
+    break;
+  }
+}
 
 // Check if pcsclite is installed
-if (!fs.existsSync(PCSCLITE_PATH)) {
+if (!PCSCLITE_PATH) {
   console.log('⚠️  @pokusew/pcsclite not found, skipping patch');
   process.exit(0);
 }

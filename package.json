@@ -27,7 +27,7 @@
     "prebuild": "npm run clean",
     "dev": "vite build --watch",
     "start": "node dist/index.cjs",
-    "example": "node example.js",
+    "example": "node example.cjs",
     "postinstall": "node scripts/patch-pcsclite.cjs",
     "lint": "eslint src/**/*.ts",
     "lint:fix": "eslint src/**/*.ts --fix",

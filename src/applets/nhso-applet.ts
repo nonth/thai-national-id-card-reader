@@ -1,5 +1,5 @@
+import smartcard from '@nonth/smartcard';
 import legacy from 'legacy-encoding';
-import smartcard from 'smartcard';
 
 const { CommandApdu } = smartcard;
 

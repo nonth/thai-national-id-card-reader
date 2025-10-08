@@ -26,7 +26,7 @@ export default defineConfig({
     },
     rollupOptions: {
       // Mark dependencies as external so they're not bundled
-      external: ['smartcard', 'hex2imagebase64', 'legacy-encoding', 'events'],
+      external: ['@nonth/smartcard', 'hex2imagebase64', 'legacy-encoding', 'events'],
       output: [
         // CommonJS output configuration
         {

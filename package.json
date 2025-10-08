@@ -69,9 +69,9 @@
     "npm": ">=6.0.0"
   },
   "dependencies": {
+    "@nonth/smartcard": "^1.0.48",
     "hex2imagebase64": "^1.0.0",
-    "legacy-encoding": "^3.0.0",
-    "smartcard": "^1.0.37"
+    "legacy-encoding": "^3.0.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.8.1",

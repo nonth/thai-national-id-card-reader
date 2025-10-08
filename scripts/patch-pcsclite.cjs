@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Patches @pokusew/pcsclite binding.gyp to support C++20
+ * Patches @nonth/pcsclite binding.gyp to support C++20
  * Required for Electron 38+ compatibility
  */
 
@@ -11,11 +11,11 @@ const path = require('path');
 // Try multiple possible paths for pcsclite
 const POSSIBLE_PATHS = [
   // When run from within thai-national-id-card-reader
-  path.join(__dirname, '..', 'node_modules', '@pokusew', 'pcsclite', 'binding.gyp'),
+  path.join(__dirname, '..', 'node_modules', '@nonth', 'pcsclite', 'binding.gyp'),
   // When run from parent project
-  path.join(process.cwd(), 'node_modules', '@pokusew', 'pcsclite', 'binding.gyp'),
+  path.join(process.cwd(), 'node_modules', '@nonth', 'pcsclite', 'binding.gyp'),
   // When thai-national-id-card-reader is a dependency
-  path.join(__dirname, '..', '..', '..', '@pokusew', 'pcsclite', 'binding.gyp'),
+  path.join(__dirname, '..', '..', '..', '@nonth', 'pcsclite', 'binding.gyp'),
 ];
 
 let PCSCLITE_PATH = null;
@@ -28,11 +28,11 @@ for (const possiblePath of POSSIBLE_PATHS) {
 
 // Check if pcsclite is installed
 if (!PCSCLITE_PATH) {
-  console.log('⚠️  @pokusew/pcsclite not found, skipping patch');
+  console.log('⚠️  @nonth/pcsclite not found, skipping patch');
   process.exit(0);
 }
 
-console.log('🔧 Patching @pokusew/pcsclite for C++20 support...');
+console.log('🔧 Patching @nonth/pcsclite for C++20 support...');
 
 try {
   let content = fs.readFileSync(PCSCLITE_PATH, 'utf8');
@@ -77,8 +77,8 @@ try {
   );
 
   fs.writeFileSync(PCSCLITE_PATH, finalContent, 'utf8');
-  console.log('✅ Successfully patched @pokusew/pcsclite for C++20 support');
+  console.log('✅ Successfully patched @nonth/pcsclite for C++20 support');
 } catch (error) {
-  console.error('❌ Failed to patch @pokusew/pcsclite:', error.message);
+  console.error('❌ Failed to patch @nonth/pcsclite:', error.message);
   process.exit(1);
 }

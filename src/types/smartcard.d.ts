@@ -1,4 +1,4 @@
-declare module 'smartcard' {
+declare module '@nonth/smartcard' {
   export class CommandApdu {
     constructor(options: { bytes: number[] });
   }

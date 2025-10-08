@@ -1,4 +1,4 @@
-import smartcard from 'smartcard';
+import smartcard from '@nonth/smartcard';
 
 import { NhsoApplet } from './applets/nhso-applet';
 import { PersonalApplet } from './applets/personal-applet';

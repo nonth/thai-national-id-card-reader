@@ -1,6 +1,6 @@
+import smartcard from '@nonth/smartcard';
 import hex2imagebase64 from 'hex2imagebase64';
 import legacy from 'legacy-encoding';
-import smartcard from 'smartcard';
 
 const { CommandApdu } = smartcard;
 

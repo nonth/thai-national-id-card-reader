@@ -1,4 +1,4 @@
-import smartcard from 'smartcard';
+import smartcard from '@nonth/smartcard';
 
 const { CommandApdu } = smartcard;
 

@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file. See [Conven
 
 
 
+## <small>1.0.5 (2025-10-09)</small>
+
+* chore: add .nvmrc for Node.js version management ([26e1553](https://github.com/nonth/thai-national-id-card-reader/commit/26e1553))
+* fix: rename example.js to example.cjs for ES module compatibility ([805db83](https://github.com/nonth/thai-national-id-card-reader/commit/805db83))
+* refactor: replace smartcard with @nonth/smartcard ([f9c5d02](https://github.com/nonth/thai-national-id-card-reader/commit/f9c5d02))
+
 ## <small>1.0.4 (2025-10-07)</small>
 
 * fix: improve patch script to find pcsclite in multiple locations ([08bf215](https://github.com/nonth/thai-national-id-card-reader/commit/08bf215))

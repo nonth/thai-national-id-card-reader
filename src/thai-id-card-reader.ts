@@ -23,10 +23,7 @@ import { getLaser } from './utils/reader';
  */
 export class ThaiIdCardReader extends CardReaderEventEmitter {
   // Core properties
-  private devices: {
-    on: (_event: string, _handler: (_event: unknown) => void) => void;
-    removeAllListeners: () => void;
-  } | null = null;
+  private devices: Devices | null = null;
   private readonly options: CardReaderOptions;
   private isInitialized = false;
   private cardInserted = false;
@@ -123,11 +120,23 @@ export class ThaiIdCardReader extends CardReaderEventEmitter {
   }
 
   /**
-   * Clean up all resources
+   * Clean up all resources and properly close PC/SC connection
    */
   private cleanup(): void {
     if (this.devices) {
+      this.logDebug('Cleaning up PC/SC resources...');
+
+      // Remove all event listeners first
       this.devices.removeAllListeners();
+
+      // Close the PC/SC connection to free resources and allow process to exit
+      try {
+        this.devices.close();
+        this.logDebug('PC/SC connection closed successfully');
+      } catch (error) {
+        this.logDebug('Error closing PC/SC connection (may be expected during shutdown)', error);
+      }
+
       this.devices = null;
     }
 

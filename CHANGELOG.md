@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file. See [Conven
 
 
 
+## <small>1.0.7 (2025-10-12)</small>
+
+* build: migrate to published @nonth/smartcard package ([1f99cc7](https://github.com/nonth/thai-national-id-card-reader/commit/1f99cc7))
+* refactor: migrate to @nonth/smartcard native type definitions ([d44639f](https://github.com/nonth/thai-national-id-card-reader/commit/d44639f))
+
 ## <small>1.0.6 (2025-10-12)</small>
 
 * build: consolidate all type definitions into single entry file ([987b451](https://github.com/nonth/thai-national-id-card-reader/commit/987b451))

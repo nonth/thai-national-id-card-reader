@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file. See [Conven
 
 
 
+## <small>1.0.6 (2025-10-12)</small>
+
+* build: consolidate all type definitions into single entry file ([987b451](https://github.com/nonth/thai-national-id-card-reader/commit/987b451))
+
 ## <small>1.0.5 (2025-10-09)</small>
 
 * chore: add .nvmrc for Node.js version management ([26e1553](https://github.com/nonth/thai-national-id-card-reader/commit/26e1553))

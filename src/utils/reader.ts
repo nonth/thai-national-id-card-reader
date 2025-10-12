@@ -1,6 +1,4 @@
-import smartcard from '@nonth/smartcard';
-
-const { CommandApdu } = smartcard;
+import { CommandApdu } from '@nonth/smartcard';
 
 import { Card } from '../types';
 

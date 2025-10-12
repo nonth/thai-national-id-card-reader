@@ -1,4 +1,4 @@
-import smartcard from '@nonth/smartcard';
+import { Devices } from '@nonth/smartcard';
 
 import { NhsoApplet } from './applets/nhso-applet';
 import { PersonalApplet } from './applets/personal-applet';
@@ -14,8 +14,6 @@ import {
   DeviceEvent,
 } from './types';
 import { getLaser } from './utils/reader';
-
-const { Devices } = smartcard;
 
 /**
  * Thai National ID Card Reader

@@ -69,7 +69,7 @@
     "npm": ">=6.0.0"
   },
   "dependencies": {
-    "@nonth/smartcard": "^1.0.48",
+    "@nonth/smartcard": "file:../smartcard",
     "hex2imagebase64": "^1.0.0",
     "legacy-encoding": "^3.0.0"
   },

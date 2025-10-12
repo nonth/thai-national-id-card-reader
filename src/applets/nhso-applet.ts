@@ -1,7 +1,5 @@
-import smartcard from '@nonth/smartcard';
+import { CommandApdu } from '@nonth/smartcard';
 import legacy from 'legacy-encoding';
-
-const { CommandApdu } = smartcard;
 
 import { apduNhso } from '../apdu/nhso';
 import { NhsoData, Card } from '../types';

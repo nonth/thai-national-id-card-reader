@@ -5,6 +5,9 @@
  * with full type safety and documentation for all data structures and events.
  */
 
+// Re-export Card type from @nonth/smartcard
+export type { Card } from '@nonth/smartcard';
+
 // #region Core Data Structures
 
 /**
@@ -128,41 +131,6 @@ export interface CardReaderOptions {
    * Default: false
    */
   debug?: boolean;
-}
-
-// #endregion
-
-// #region Hardware Interface Types
-
-/**
- * Smartcard interface abstraction
- *
- * Represents a physical smartcard with command execution capabilities.
- * This interface abstracts the underlying smartcard library implementation.
- */
-export interface Card {
-  /**
-   * Issue an APDU command to the smartcard
-   * @param command - The APDU command to execute
-   * @returns Promise resolving to the command response data
-   */
-  issueCommand(command: CommandApduLike): Promise<Buffer>;
-
-  /**
-   * Get the Answer to Reset (ATR) from the card
-   * @returns Buffer containing the card's ATR
-   */
-  getAtr?(): Buffer;
-}
-
-/**
- * APDU (Application Protocol Data Unit) command structure
- *
- * Represents a command that can be sent to a smartcard.
- */
-export interface CommandApduLike {
-  /** Raw bytes of the APDU command */
-  bytes?: number[];
 }
 
 // #endregion

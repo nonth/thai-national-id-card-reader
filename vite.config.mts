@@ -12,9 +12,9 @@ export default defineConfig({
     }),
     dts({
       insertTypesEntry: true,
-      rollupTypes: false, // Disable rollup types to avoid Buffer issue
+      rollupTypes: true, // Bundle all types into single entry file
       tsconfigPath: './tsconfig.json',
-      copyDtsFiles: true, // Copy .d.ts files to output
+      copyDtsFiles: false, // Don't copy individual .d.ts files
     }),
   ],
   build: {
